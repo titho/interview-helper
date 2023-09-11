@@ -1,6 +1,3 @@
 openai
 langchain
 streamlit
-os
-uuid
-logging
