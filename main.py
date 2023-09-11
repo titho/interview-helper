@@ -14,7 +14,7 @@ st.title("Technical Interview Preparation Guide")
 # Model selection and token limit
 models = ["gpt-3.5-turbo", "gpt-4.0"]
 selected_model = st.selectbox("Select your preferred GPT model:", models)
-token_limit = st.slider("Set the token limit for the output:", 50, 4096, 4096)
+token_limit = st.slider("Set the token limit for the output:", 50, 2048, 2048)
 
 # Check for the OPENAI_API_KEY environment variable
 API = os.environ.get("OPENAI_API_KEY")
@@ -23,13 +23,11 @@ API = os.environ.get("OPENAI_API_KEY")
 if not API:
     API = st.text_input("Enter your OPENAI API-KEY:", type="password")
     if not API:
-        st.warning("Please provide your OpenAI API key.")
+        st.warning("Please provide your OpenAI API key. Get it from [here](https://platform.openai.com/account/api-keys).\n")
 
 # If an API key has been provided, create an OpenAI language model instance
 if API:
     llm = ChatOpenAI(model=selected_model, temperature=0.7, openai_api_key=API, max_tokens=token_limit)
-else:
-    st.warning("Enter your OPENAI API-KEY. Get your OpenAI API key from [here](https://platform.openai.com/account/api-keys).\n")
 
 # Initialize session state
 initialize_session_state()
