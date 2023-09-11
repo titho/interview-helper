@@ -12,7 +12,7 @@ logging.basicConfig(filename='app.log', level=logging.INFO,
 st.title("Technical Interview Preparation Guide")
 
 # Model selection and token limit
-models = ["gpt-3.5-turbo", "gpt-4.0"]
+models = ["gpt-3.5-turbo"]
 selected_model = st.selectbox("Select your preferred GPT model:", models)
 token_limit = st.slider("Set the token limit for the output:", 50, 2048, 2048)
 
@@ -21,7 +21,7 @@ API = os.environ.get("OPENAI_API_KEY")
 
 # If the API key isn't found in environment variables, allow the user to input it
 if not API:
-    API = st.text_input("Enter your OPENAI API-KEY:", type="password")
+    API = st.text_input("Enter your OpenAI API key:", type="password")
     if not API:
         st.warning("Please provide your OpenAI API key. Get it from [here](https://platform.openai.com/account/api-keys).\n")
 
@@ -44,5 +44,6 @@ if st.button("Fill with Sample Data"):
 # Display UI elements and get user input
 user_input = display_ui_elements()
 
-# Generate preparation guide
-generate_preparation_guide(user_input, llm)
+if API:
+    llm = ChatOpenAI(model=selected_model, temperature=0.7, openai_api_key=API, max_tokens=token_limit)# Generate preparation guide
+    generate_preparation_guide(user_input, llm)
