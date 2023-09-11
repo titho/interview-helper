@@ -23,6 +23,9 @@ def initialize_session_state():
         st.session_state.years_experience = ""
         st.session_state.preferred_language = ""
         st.session_state.project_description = ""
+    
+    if 'chat_responses' not in st.session_state:
+        st.session_state.chat_responses = []
 
 def save_to_file(prompt, response):
     # Ensure the 'sessions' directory exists
@@ -40,7 +43,7 @@ def display_ui_elements():
     years_experience = st.text_input("Enter your years of technical experience:", value=st.session_state.years_experience, key="years_experience_input")
     preferred_language = st.text_input("Enter your preferred programming language:", value=st.session_state.preferred_language, key="preferred_language_input")
     project_description = st.text_area("Describe a project or domain you're familiar with:", value=st.session_state.project_description, key="project_description_input")
-    
+
     # Integrating the display_info_preference function
     info_preference = display_info_preference()
     
@@ -76,7 +79,7 @@ def generate_preparation_guide(user_input, llm):
     if st.button("Generate Preparation Guide"):
         try:
             # Refining the prompt to be more instructional
-            template = ("Imagine you're the most renowned software engineering mentor. Your mission is to enlighten {name}, who has {years_experience} years of expertise, about {selected_topics}, delving deeper into {selected_subtopics}. When illustrating concepts, draw parallels to {project_description} and utilize {preferred_language} for any coding examples. Ensure your guidance aligns with {name}'s preference: {info_preference}.")
+            template = ("As a top-tier software engineering mentor, provide {name}, who has {years_experience} years of experience, a concise and direct tutorial on {selected_topics}, emphasizing {selected_subtopics}. Use {preferred_language} for coding examples and relate them to the {project_description} domain. Ensure the content aligns with the instruction: {info_preference}. Avoid introductory greetings or pleasantries.")
 
             # Create the PromptTemplate
             prompt_template = PromptTemplate(
@@ -88,6 +91,8 @@ def generate_preparation_guide(user_input, llm):
 
             # Use the user_input dictionary for the values
             results = interview_prep_chain(user_input)
+
+            st.session_state.chat_responses.append(results['preparation_guide'])
 
             save_to_file(prompt_template, results['preparation_guide'])
 
